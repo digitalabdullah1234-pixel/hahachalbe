@@ -1,0 +1,507 @@
+2026-Oct-22 14:25:17
+Docker 29.9.2 with BuildKit and Buildx detected on deployment server (localhost).
+2026-Oct-22 14:25:17
+Starting deployment of digitalabdullah1234-pixel/bibabiba:main to localhost.
+2026-Oct-22 14:25:17
+Preparing container with helper image: docker.io/coollabsio/coolify-helper:1.0.17
+2026-Oct-22 14:25:18
+[CMD]: docker stop --timeout=30 'gyguofenqbv4hcc4onk0la7n'
+2026-Oct-22 14:25:18
+Error response from daemon: No such container: gyguofenqbv4hcc4onk0la7n
+2026-Oct-22 14:25:18
+[CMD]: docker run -d --network 'coolify' --name gyguofenqbv4hcc4onk0la7n  --rm -v /root/.docker/buildx:/root/.docker/buildx -v /var/run/docker.sock:/var/run/docker.sock docker.io/coollabsio/coolify-helper:1.0.17
+2026-Oct-22 14:25:18
+1139f724f9acfa851f92e57e86d51eb68798c959dccb5a98fc608ed2a7a5cc43
+2026-Oct-22 14:25:19
+[CMD]: docker exec gyguofenqbv4hcc4onk0la7n bash -c 'GIT_SSH_COMMAND="ssh -o ConnectTimeout=30 -p 22 -o Port=22 -o LogLevel=ERROR -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" git ls-remote '\''https://github.com/digitalabdullah1234-pixel/bibabiba'\'' '\''refs/heads/main'\'''
+2026-Oct-22 14:25:19
+fe63a75581106a4e58e04a26308e8a48c01c5468	refs/heads/main
+2026-Oct-22 14:25:19
+----------------------------------------
+2026-Oct-22 14:25:19
+Importing digitalabdullah1234-pixel/bibabiba:main (commit sha fe63a75581106a4e58e04a26308e8a48c01c5468) to /artifacts/gyguofenqbv4hcc4onk0la7n.
+2026-Oct-22 14:25:20
+[CMD]: docker exec gyguofenqbv4hcc4onk0la7n bash -c 'git clone --depth=1 --recurse-submodules --shallow-submodules -b '\''main'\'' '\''https://github.com/digitalabdullah1234-pixel/bibabiba'\'' '\''/artifacts/gyguofenqbv4hcc4onk0la7n'\'' && cd '\''/artifacts/gyguofenqbv4hcc4onk0la7n'\'' && GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" git fetch --depth=1 origin '\''fe63a75581106a4e58e04a26308e8a48c01c5468'\'' && git -c advice.detachedHead=false checkout '\''fe63a75581106a4e58e04a26308e8a48c01c5468'\'' >/dev/null 2>&1 && cd '\''/artifacts/gyguofenqbv4hcc4onk0la7n'\'' && if [ -f .gitmodules ]; then sed -i "s#[A-Za-z0-9._-]*@\(.*\):#https://\1/#g" '\''/artifacts/gyguofenqbv4hcc4onk0la7n'\''/.gitmodules || true && git submodule sync && GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" git submodule update --init --recursive --depth=1; fi && cd '\''/artifacts/gyguofenqbv4hcc4onk0la7n'\'' && GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" git lfs pull'
+2026-Oct-22 14:25:20
+Cloning into '/artifacts/gyguofenqbv4hcc4onk0la7n'...
+2026-Oct-22 14:25:36
+From https://github.com/digitalabdullah1234-pixel/bibabiba
+2026-Oct-22 14:25:36
+* branch            fe63a75581106a4e58e04a26308e8a48c01c5468 -> FETCH_HEAD
+2026-Oct-22 14:25:38
+[CMD]: docker exec gyguofenqbv4hcc4onk0la7n bash -c 'cd /artifacts/gyguofenqbv4hcc4onk0la7n && git log -1 '\''fe63a75581106a4e58e04a26308e8a48c01c5468'\'' --pretty=%B'
+2026-Oct-22 14:25:38
+Initial commit
+2026-Oct-22 14:25:38
+Image not found (olbu0fj7ffdiydtrrfr6jpzu:fe63a75581106a4e58e04a26308e8a48c01c5468). Building new image.
+2026-Oct-22 14:25:39
+[CMD]: docker exec gyguofenqbv4hcc4onk0la7n bash -c 'cat /artifacts/gyguofenqbv4hcc4onk0la7n/Dockerfile'
+2026-Oct-22 14:25:39
+FROM node:22-bookworm-slim AS build
+2026-Oct-22 14:25:39
+2026-Oct-22 14:25:39
+WORKDIR /app
+2026-Oct-22 14:25:39
+RUN corepack enable && corepack prepare pnpm@10.26.1 --activate
+2026-Oct-22 14:25:39
+2026-Oct-22 14:25:39
+COPY . .
+2026-Oct-22 14:25:39
+RUN pnpm install --frozen-lockfile
+2026-Oct-22 14:25:39
+2026-Oct-22 14:25:39
+ENV PORT=5173
+2026-Oct-22 14:25:39
+ENV BASE_PATH=/
+2026-Oct-22 14:25:39
+2026-Oct-22 14:25:39
+RUN pnpm --filter @workspace/bianco-restaurant run build
+2026-Oct-22 14:25:39
+2026-Oct-22 14:25:39
+FROM nginx:1.27-alpine AS runtime
+2026-Oct-22 14:25:39
+2026-Oct-22 14:25:39
+COPY nginx.static.conf /etc/nginx/conf.d/default.conf
+2026-Oct-22 14:25:39
+COPY --from=build /app/artifacts/bianco-restaurant/dist/public /usr/share/nginx/html
+2026-Oct-22 14:25:39
+2026-Oct-22 14:25:39
+EXPOSE 80
+2026-Oct-22 14:25:39
+Creating build-time .env file in /artifacts (outside Docker context).
+2026-Oct-22 14:25:39
+[CMD]: docker exec gyguofenqbv4hcc4onk0la7n bash -c 'cat /artifacts/gyguofenqbv4hcc4onk0la7n/Dockerfile'
+2026-Oct-22 14:25:39
+FROM node:22-bookworm-slim AS build
+2026-Oct-22 14:25:39
+2026-Oct-22 14:25:39
+WORKDIR /app
+2026-Oct-22 14:25:39
+RUN corepack enable && corepack prepare pnpm@10.26.1 --activate
+2026-Oct-22 14:25:39
+2026-Oct-22 14:25:39
+COPY . .
+2026-Oct-22 14:25:39
+RUN pnpm install --frozen-lockfile
+2026-Oct-22 14:25:39
+2026-Oct-22 14:25:39
+ENV PORT=5173
+2026-Oct-22 14:25:39
+ENV BASE_PATH=/
+2026-Oct-22 14:25:39
+2026-Oct-22 14:25:39
+RUN pnpm --filter @workspace/bianco-restaurant run build
+2026-Oct-22 14:25:39
+2026-Oct-22 14:25:39
+FROM nginx:1.27-alpine AS runtime
+2026-Oct-22 14:25:39
+2026-Oct-22 14:25:39
+COPY nginx.static.conf /etc/nginx/conf.d/default.conf
+2026-Oct-22 14:25:39
+COPY --from=build /app/artifacts/bianco-restaurant/dist/public /usr/share/nginx/html
+2026-Oct-22 14:25:39
+2026-Oct-22 14:25:39
+EXPOSE 80
+2026-Oct-22 14:25:39
+Final Dockerfile:
+2026-Oct-22 14:25:39
+----------------------------------------
+2026-Oct-22 14:25:39
+Building docker image started.
+2026-Oct-22 14:25:39
+To check the current progress, click on Show Debug Logs.
+2026-Oct-22 14:25:40
+[CMD]: docker exec gyguofenqbv4hcc4onk0la7n bash -c 'cat /artifacts/build.sh'
+2026-Oct-22 14:25:40
+cd /artifacts/gyguofenqbv4hcc4onk0la7n && set -a && source /artifacts/build-time.env && set +a && DOCKER_BUILDKIT=1 docker build  --add-host coolify:10.0.1.4 --add-host coolify-db:10.0.1.2 --add-host coolify-redis:10.0.1.3 --add-host coolify-sentinel:10.0.1.5 --network host -f /artifacts/gyguofenqbv4hcc4onk0la7n/Dockerfile --progress plain -t olbu0fj7ffdiydtrrfr6jpzu:fe63a75581106a4e58e04a26308e8a48c01c5468 --build-arg 'COOLIFY_URL' --build-arg 'COOLIFY_FQDN' --build-arg 'COOLIFY_BRANCH' --build-arg 'COOLIFY_RESOURCE_UUID' --build-arg 'COOLIFY_BUILD_SECRETS_HASH=69917d37cb1ec646579a584e6bb2696b276d68caa5c4cd9daa9b507a37dc1f6a' --build-arg 'COOLIFY_URL' --build-arg 'COOLIFY_FQDN' --build-arg 'COOLIFY_BRANCH' --build-arg 'COOLIFY_RESOURCE_UUID' /artifacts/gyguofenqbv4hcc4onk0la7n
+2026-Oct-22 14:25:40
+[CMD]: docker exec gyguofenqbv4hcc4onk0la7n bash -c 'bash /artifacts/build.sh'
+2026-Oct-22 14:25:40
+#0 building with "default" instance using docker driver
+2026-Oct-22 14:25:40
+2026-Oct-22 14:25:40
+#1 [internal] load build definition from Dockerfile
+2026-Oct-22 14:25:40
+#1 transferring dockerfile: 970B done
+2026-Oct-22 14:25:40
+#1 DONE 0.0s
+2026-Oct-22 14:25:40
+2026-Oct-22 14:25:40
+#2 [internal] load metadata for docker.io/library/node:22-bookworm-slim
+2026-Oct-22 14:25:42
+#2 DONE 1.7s
+2026-Oct-22 14:25:42
+2026-Oct-22 14:25:42
+#3 [internal] load metadata for docker.io/library/nginx:1.27-alpine
+2026-Oct-22 14:25:42
+#3 DONE 1.9s
+2026-Oct-22 14:25:42
+#4 [internal] load .dockerignore
+2026-Oct-22 14:25:42
+#4 transferring context: 149B done
+2026-Oct-22 14:25:42
+#4 DONE 0.0s
+2026-Oct-22 14:25:42
+2026-Oct-22 14:25:42
+#5 [build 1/6] FROM docker.io/library/node:22-bookworm-slim@sha256:de170b39439eb0e5a3444ad7d60b015614a381e10fecae2e30ec9e735122f38d
+2026-Oct-22 14:25:42
+#5 resolve docker.io/library/node:22-bookworm-slim@sha256:de170b39439eb0e5a3444ad7d60b015614a381e10fecae2e30ec9e735122f38d 0.0s done
+2026-Oct-22 14:25:42
+#5 sha256:9d58805976c12f11013d188c510c3520e3f061c1b311d4905afe5865aa496e63 0B / 449B 0.2s
+2026-Oct-22 14:25:42
+#5 sha256:696628b66b50a8ea2d374542f47107bc19fb3fd29825211da5c68b74a1b01555 0B / 1.71MB 0.2s
+2026-Oct-22 14:25:42
+#5 sha256:ba8be34911c2eabcd63c9da67f2e8887ddf912df62c1223ca377ef9e9655cfba 0B / 49.89MB 0.2s
+2026-Oct-22 14:25:43
+#5 sha256:9d58805976c12f11013d188c510c3520e3f061c1b311d4905afe5865aa496e63 449B / 449B 0.2s done
+2026-Oct-22 14:25:43
+#5 sha256:b43ad0aedb87ae13912d52799d0d5552c146dced05197a7fa83b117cb3308906 0B / 3.31kB 0.2s
+2026-Oct-22 14:25:43
+#5 sha256:11422d7ca1a44390a32bd8d8d9dc5946b4d053b3bbd9507d682e35584ba84a26 0B / 28.25MB 0.2s
+2026-Oct-22 14:25:43
+#5 sha256:696628b66b50a8ea2d374542f47107bc19fb3fd29825211da5c68b74a1b01555 1.71MB / 1.71MB 0.5s done
+2026-Oct-22 14:25:43
+#5 sha256:b43ad0aedb87ae13912d52799d0d5552c146dced05197a7fa83b117cb3308906 3.31kB / 3.31kB 0.6s done
+2026-Oct-22 14:25:43
+#5 sha256:ba8be34911c2eabcd63c9da67f2e8887ddf912df62c1223ca377ef9e9655cfba 3.15MB / 49.89MB 0.8s
+2026-Oct-22 14:25:43
+#5 sha256:ba8be34911c2eabcd63c9da67f2e8887ddf912df62c1223ca377ef9e9655cfba 6.29MB / 49.89MB 0.9s
+2026-Oct-22 14:25:44
+#5 sha256:ba8be34911c2eabcd63c9da67f2e8887ddf912df62c1223ca377ef9e9655cfba 11.53MB / 49.89MB 1.2s
+2026-Oct-22 14:25:44
+#5 sha256:ba8be34911c2eabcd63c9da67f2e8887ddf912df62c1223ca377ef9e9655cfba 14.68MB / 49.89MB 1.4s
+2026-Oct-22 14:25:44
+#5 sha256:ba8be34911c2eabcd63c9da67f2e8887ddf912df62c1223ca377ef9e9655cfba 17.83MB / 49.89MB 1.5s
+2026-Oct-22 14:25:44
+#5 ...
+2026-Oct-22 14:25:44
+2026-Oct-22 14:25:44
+#6 [internal] load build context
+2026-Oct-22 14:25:44
+#6 transferring context: 115.41MB 1.9s done
+2026-Oct-22 14:25:44
+#6 DONE 1.9s
+2026-Oct-22 14:25:44
+2026-Oct-22 14:25:44
+#5 [build 1/6] FROM docker.io/library/node:22-bookworm-slim@sha256:de170b39439eb0e5a3444ad7d60b015614a381e10fecae2e30ec9e735122f38d
+2026-Oct-22 14:25:44
+#5 sha256:ba8be34911c2eabcd63c9da67f2e8887ddf912df62c1223ca377ef9e9655cfba 20.97MB / 49.89MB 1.7s
+2026-Oct-22 14:25:44
+#5 sha256:ba8be34911c2eabcd63c9da67f2e8887ddf912df62c1223ca377ef9e9655cfba 24.12MB / 49.89MB 1.8s
+2026-Oct-22 14:25:44
+#5 sha256:ba8be34911c2eabcd63c9da67f2e8887ddf912df62c1223ca377ef9e9655cfba 27.26MB / 49.89MB 2.0s
+2026-Oct-22 14:25:45
+#5 sha256:ba8be34911c2eabcd63c9da67f2e8887ddf912df62c1223ca377ef9e9655cfba 30.41MB / 49.89MB 2.1s
+2026-Oct-22 14:25:45
+#5 sha256:ba8be34911c2eabcd63c9da67f2e8887ddf912df62c1223ca377ef9e9655cfba 33.55MB / 49.89MB 2.3s
+2026-Oct-22 14:25:45
+#5 sha256:11422d7ca1a44390a32bd8d8d9dc5946b4d053b3bbd9507d682e35584ba84a26 2.10MB / 28.25MB 2.1s
+2026-Oct-22 14:25:45
+#5 sha256:ba8be34911c2eabcd63c9da67f2e8887ddf912df62c1223ca377ef9e9655cfba 36.70MB / 49.89MB 2.4s
+2026-Oct-22 14:25:45
+#5 sha256:ba8be34911c2eabcd63c9da67f2e8887ddf912df62c1223ca377ef9e9655cfba 39.85MB / 49.89MB 2.6s
+2026-Oct-22 14:25:45
+#5 sha256:ba8be34911c2eabcd63c9da67f2e8887ddf912df62c1223ca377ef9e9655cfba 44.04MB / 49.89MB 2.9s
+2026-Oct-22 14:25:45
+#5 sha256:ba8be34911c2eabcd63c9da67f2e8887ddf912df62c1223ca377ef9e9655cfba 47.19MB / 49.89MB 3.0s
+2026-Oct-22 14:25:46
+#5 sha256:ba8be34911c2eabcd63c9da67f2e8887ddf912df62c1223ca377ef9e9655cfba 49.89MB / 49.89MB 3.2s done
+2026-Oct-22 14:25:46
+#5 sha256:11422d7ca1a44390a32bd8d8d9dc5946b4d053b3bbd9507d682e35584ba84a26 4.19MB / 28.25MB 3.3s
+2026-Oct-22 14:25:47
+#5 sha256:11422d7ca1a44390a32bd8d8d9dc5946b4d053b3bbd9507d682e35584ba84a26 6.29MB / 28.25MB 4.1s
+2026-Oct-22 14:25:47
+#5 sha256:11422d7ca1a44390a32bd8d8d9dc5946b4d053b3bbd9507d682e35584ba84a26 8.39MB / 28.25MB 4.5s
+2026-Oct-22 14:25:47
+#5 sha256:11422d7ca1a44390a32bd8d8d9dc5946b4d053b3bbd9507d682e35584ba84a26 10.49MB / 28.25MB 4.8s
+2026-Oct-22 14:25:48
+#5 sha256:11422d7ca1a44390a32bd8d8d9dc5946b4d053b3bbd9507d682e35584ba84a26 12.58MB / 28.25MB 5.1s
+2026-Oct-22 14:25:48
+#5 sha256:11422d7ca1a44390a32bd8d8d9dc5946b4d053b3bbd9507d682e35584ba84a26 14.68MB / 28.25MB 5.3s
+2026-Oct-22 14:25:48
+#5 sha256:11422d7ca1a44390a32bd8d8d9dc5946b4d053b3bbd9507d682e35584ba84a26 17.83MB / 28.25MB 5.6s
+2026-Oct-22 14:25:48
+#5 sha256:11422d7ca1a44390a32bd8d8d9dc5946b4d053b3bbd9507d682e35584ba84a26 19.92MB / 28.25MB 5.7s
+2026-Oct-22 14:25:48
+#5 sha256:11422d7ca1a44390a32bd8d8d9dc5946b4d053b3bbd9507d682e35584ba84a26 23.07MB / 28.25MB 5.9s
+2026-Oct-22 14:25:49
+#5 sha256:11422d7ca1a44390a32bd8d8d9dc5946b4d053b3bbd9507d682e35584ba84a26 25.17MB / 28.25MB 6.0s
+2026-Oct-22 14:25:49
+#5 sha256:11422d7ca1a44390a32bd8d8d9dc5946b4d053b3bbd9507d682e35584ba84a26 28.25MB / 28.25MB 6.2s
+2026-Oct-22 14:25:49
+#5 ...
+2026-Oct-22 14:25:49
+2026-Oct-22 14:25:49
+#7 [runtime 1/3] FROM docker.io/library/nginx:1.27-alpine@sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10
+2026-Oct-22 14:25:49
+#7 resolve docker.io/library/nginx:1.27-alpine@sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10 0.0s done
+2026-Oct-22 14:25:49
+#7 sha256:39c2ddfd6010082a4a646e7ca44e95aca9bf3eaebc00f17f7ccc2954004f2a7d 15.52MB / 15.52MB 5.1s done
+2026-Oct-22 14:25:49
+#7 sha256:34a64644b756511a2e217f0508e11d1a572085d66cd6dc9a555a082ad49a3102 1.40kB / 1.40kB 0.5s done
+2026-Oct-22 14:25:49
+#7 sha256:197eb75867ef4fcecd4724f17b0972ab0489436860a594a9445f8eaff8155053 1.21kB / 1.21kB 0.3s done
+2026-Oct-22 14:25:49
+#7 sha256:81bd8ed7ec6789b0cb7f1b47ee731c522f6dba83201ec73cd6bca1350f582948 402B / 402B 0.3s done
+2026-Oct-22 14:25:49
+#7 sha256:d7e5070240863957ebb0b5a44a5729963c3462666baa2947d00628cb5f2d5773 955B / 955B 0.3s done
+2026-Oct-22 14:25:49
+#7 sha256:b464cfdf2a6319875aeb27359ec549790ce14d8214fcb16ef915e4530e5ed235 629B / 629B 0.3s done
+2026-Oct-22 14:25:49
+#7 sha256:61ca4f733c802afd9e05a32f0de0361b6d713b8b53292dc15fb093229f648674 1.79MB / 1.79MB 0.9s done
+2026-Oct-22 14:25:49
+#7 sha256:f18232174bc91741fdf3da96d85011092101a032a93a388b79e99e69c2d5c870 3.64MB / 3.64MB 0.4s done
+2026-Oct-22 14:25:49
+#7 extracting sha256:f18232174bc91741fdf3da96d85011092101a032a93a388b79e99e69c2d5c870 0.2s done
+2026-Oct-22 14:25:49
+#7 extracting sha256:61ca4f733c802afd9e05a32f0de0361b6d713b8b53292dc15fb093229f648674 1.2s done
+2026-Oct-22 14:25:49
+#7 extracting sha256:b464cfdf2a6319875aeb27359ec549790ce14d8214fcb16ef915e4530e5ed235 0.0s done
+2026-Oct-22 14:25:49
+#7 extracting sha256:d7e5070240863957ebb0b5a44a5729963c3462666baa2947d00628cb5f2d5773 0.0s done
+2026-Oct-22 14:25:49
+#7 extracting sha256:81bd8ed7ec6789b0cb7f1b47ee731c522f6dba83201ec73cd6bca1350f582948 0.0s done
+2026-Oct-22 14:25:49
+#7 extracting sha256:197eb75867ef4fcecd4724f17b0972ab0489436860a594a9445f8eaff8155053 0.0s done
+2026-Oct-22 14:25:49
+#7 extracting sha256:34a64644b756511a2e217f0508e11d1a572085d66cd6dc9a555a082ad49a3102 0.0s done
+2026-Oct-22 14:25:49
+#7 extracting sha256:39c2ddfd6010082a4a646e7ca44e95aca9bf3eaebc00f17f7ccc2954004f2a7d 0.8s done
+2026-Oct-22 14:25:49
+#7 DONE 6.6s
+2026-Oct-22 14:25:49
+2026-Oct-22 14:25:49
+#8 [runtime 2/3] COPY nginx.static.conf /etc/nginx/conf.d/default.conf
+2026-Oct-22 14:25:49
+#8 DONE 0.0s
+2026-Oct-22 14:25:49
+2026-Oct-22 14:25:49
+#5 [build 1/6] FROM docker.io/library/node:22-bookworm-slim@sha256:de170b39439eb0e5a3444ad7d60b015614a381e10fecae2e30ec9e735122f38d
+2026-Oct-22 14:25:49
+#5 sha256:11422d7ca1a44390a32bd8d8d9dc5946b4d053b3bbd9507d682e35584ba84a26 28.25MB / 28.25MB 6.2s done
+2026-Oct-22 14:25:49
+#5 extracting sha256:11422d7ca1a44390a32bd8d8d9dc5946b4d053b3bbd9507d682e35584ba84a26
+2026-Oct-22 14:25:50
+#5 extracting sha256:11422d7ca1a44390a32bd8d8d9dc5946b4d053b3bbd9507d682e35584ba84a26 1.7s done
+2026-Oct-22 14:25:50
+#5 DONE 8.3s
+2026-Oct-22 14:25:51
+#5 [build 1/6] FROM docker.io/library/node:22-bookworm-slim@sha256:de170b39439eb0e5a3444ad7d60b015614a381e10fecae2e30ec9e735122f38d
+2026-Oct-22 14:25:51
+#5 extracting sha256:b43ad0aedb87ae13912d52799d0d5552c146dced05197a7fa83b117cb3308906
+2026-Oct-22 14:25:51
+#5 extracting sha256:b43ad0aedb87ae13912d52799d0d5552c146dced05197a7fa83b117cb3308906 0.3s done
+2026-Oct-22 14:25:51
+#5 DONE 8.6s
+2026-Oct-22 14:25:51
+#5 [build 1/6] FROM docker.io/library/node:22-bookworm-slim@sha256:de170b39439eb0e5a3444ad7d60b015614a381e10fecae2e30ec9e735122f38d
+2026-Oct-22 14:25:51
+#5 extracting sha256:ba8be34911c2eabcd63c9da67f2e8887ddf912df62c1223ca377ef9e9655cfba
+2026-Oct-22 14:25:54
+#5 extracting sha256:ba8be34911c2eabcd63c9da67f2e8887ddf912df62c1223ca377ef9e9655cfba 2.9s done
+2026-Oct-22 14:25:54
+#5 DONE 11.5s
+2026-Oct-22 14:25:54
+#5 [build 1/6] FROM docker.io/library/node:22-bookworm-slim@sha256:de170b39439eb0e5a3444ad7d60b015614a381e10fecae2e30ec9e735122f38d
+2026-Oct-22 14:25:54
+#5 extracting sha256:696628b66b50a8ea2d374542f47107bc19fb3fd29825211da5c68b74a1b01555 0.1s done
+2026-Oct-22 14:25:54
+#5 DONE 11.6s
+2026-Oct-22 14:25:54
+#5 [build 1/6] FROM docker.io/library/node:22-bookworm-slim@sha256:de170b39439eb0e5a3444ad7d60b015614a381e10fecae2e30ec9e735122f38d
+2026-Oct-22 14:25:54
+#5 extracting sha256:9d58805976c12f11013d188c510c3520e3f061c1b311d4905afe5865aa496e63 0.0s done
+2026-Oct-22 14:25:54
+#5 DONE 11.7s
+2026-Oct-22 14:25:54
+2026-Oct-22 14:25:54
+#9 [build 2/6] WORKDIR /app
+2026-Oct-22 14:25:54
+#9 DONE 0.0s
+2026-Oct-22 14:25:54
+2026-Oct-22 14:25:54
+#10 [build 3/6] RUN corepack enable && corepack prepare pnpm@10.26.1 --activate
+2026-Oct-22 14:25:54
+#10 0.312 Preparing pnpm@10.26.1 for immediate activation...
+2026-Oct-22 14:26:02
+#10 DONE 7.7s
+2026-Oct-22 14:26:02
+#11 [build 4/6] COPY . .
+2026-Oct-22 14:26:02
+#11 DONE 0.5s
+2026-Oct-22 14:26:02
+#12 [build 5/6] RUN pnpm install --frozen-lockfile
+2026-Oct-22 14:26:03
+#12 0.961 Scope: all 9 workspace projects
+2026-Oct-22 14:26:03
+#12 1.130 Lockfile is up to date, resolution step is skipped
+2026-Oct-22 14:26:03
+#12 1.202 Progress: resolved 1, reused 0, downloaded 0, added 0
+2026-Oct-22 14:26:04
+#12 1.396 Packages: +478
+2026-Oct-22 14:26:04
+#12 1.396 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2026-Oct-22 14:26:04
+#12 2.205 Progress: resolved 478, reused 0, downloaded 0, added 0
+2026-Oct-22 14:26:09
+#12 6.458 Progress: resolved 478, reused 0, downloaded 1, added 0
+2026-Oct-22 14:26:09
+#12 7.011
+2026-Oct-22 14:26:09
+#12 7.011    ╭───────────────────────────────────────────────╮
+2026-Oct-22 14:26:09
+#12 7.011    │                                               │
+2026-Oct-22 14:26:09
+#12 7.011    │     Update available! 10.26.1 → 12.15.0.      │
+2026-Oct-22 14:26:09
+#12 7.011    │     Changelog: https://pnpm.io/v/12.15.0      │
+2026-Oct-22 14:26:09
+#12 7.011    │   To update, run:<REDACTED>@12.15.0   │
+2026-Oct-22 14:26:09
+#12 7.011    │                                               │
+2026-Oct-22 14:26:09
+#12 7.011    ╰───────────────────────────────────────────────╯
+2026-Oct-22 14:26:09
+#12 7.011
+2026-Oct-22 14:26:10
+#12 7.459 Progress: resolved 478, reused 0, downloaded 192, added 191
+2026-Oct-22 14:26:11
+#12 8.460 Progress: resolved 478, reused 0, downloaded 309, added 308
+2026-Oct-22 14:26:12
+#12 9.460 Progress: resolved 478, reused 0, downloaded 408, added 408
+2026-Oct-22 14:26:13
+#12 10.46 Progress: resolved 478, reused 0, downloaded 461, added 461
+2026-Oct-22 14:26:14
+#12 11.46 Progress: resolved 478, reused 0, downloaded 473, added 473
+2026-Oct-22 14:26:14
+#12 11.60  WARN  Tarball download average speed 43 KiB/s (size 74 KiB) is below 50 KiB/s: https://registry.npmjs.org/@drizzle-team/brocli/-/brocli-0.10.2.tgz (GET)
+2026-Oct-22 14:26:14
+#12 11.84 Progress: resolved 478, reused 0, downloaded 478, added 478, done
+2026-Oct-22 14:26:14
+#12 12.22 .../esbuild@0.28.2/node_modules/esbuild postinstall$ node install.js
+2026-Oct-22 14:26:14
+#12 12.33 .../esbuild@0.28.2/node_modules/esbuild postinstall: Done
+2026-Oct-22 14:26:15
+#12 12.81
+2026-Oct-22 14:26:15
+#12 12.81 dependencies:
+2026-Oct-22 14:26:15
+#12 12.81 + @replit/connectors-sdk 0.4.3
+2026-Oct-22 14:26:15
+#12 12.81
+2026-Oct-22 14:26:15
+#12 12.81 devDependencies:
+2026-Oct-22 14:26:15
+#12 12.81 + prettier 3.9.6
+2026-Oct-22 14:26:15
+#12 12.81 + typescript 5.9.3
+2026-Oct-22 14:26:15
+#12 12.81
+2026-Oct-22 14:26:15
+#12 12.89 . preinstall$ sh -c 'rm -f package-lock.json yarn.lock; case "$npm_config_user_agent" in pnpm/*) ;; *) echo "Use pnpm instead" >&2; exit 1 ;; esac'
+2026-Oct-22 14:26:15
+#12 12.91 . preinstall: Done
+2026-Oct-22 14:26:15
+#12 13.15 Done in 12.9s using pnpm v10.26.1
+2026-Oct-22 14:26:17
+#12 DONE 15.2s
+2026-Oct-22 14:26:18
+#13 [build 6/6] RUN pnpm --filter @workspace/bianco-restaurant run build
+2026-Oct-22 14:26:19
+#13 1.562
+2026-Oct-22 14:26:19
+#13 1.562 > @workspace/bianco-restaurant@0.0.0 build /app/artifacts/bianco-restaurant
+2026-Oct-22 14:26:19
+#13 1.562 > vite build --config vite.config.ts
+2026-Oct-22 14:26:19
+#13 1.562
+2026-Oct-22 14:26:19
+#13 2.097 vite v7.3.6 building client environment for production...
+2026-Oct-22 14:26:20
+#13 2.224 transforming...
+2026-Oct-22 14:26:21
+#13 3.843 src/components/ui/tooltip.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+2026-Oct-22 14:26:26
+#13 8.228 ✓ 2181 modules transformed.
+2026-Oct-22 14:26:26
+#13 8.793 rendering chunks...
+2026-Oct-22 14:26:26
+#13 8.808 computing gzip size...
+2026-Oct-22 14:26:26
+#13 8.834 dist/public/index.html                   1.25 kB │ gzip:   0.55 kB
+2026-Oct-22 14:26:26
+#13 8.834 dist/public/assets/index-QQ-Me770.css  144.21 kB │ gzip:  25.83 kB
+2026-Oct-22 14:26:26
+#13 8.834 dist/public/assets/index-BQeaovG3.js   543.97 kB │ gzip: 174.44 kB
+2026-Oct-22 14:26:26
+#13 8.834
+2026-Oct-22 14:26:26
+#13 8.834 (!) Some chunks are larger than 500 kB after minification. Consider:
+2026-Oct-22 14:26:26
+#13 8.834 - Using dynamic import() to code-split the application
+2026-Oct-22 14:26:26
+#13 8.834 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+2026-Oct-22 14:26:26
+#13 8.834 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+2026-Oct-22 14:26:26
+#13 8.835 ✓ built in 6.69s
+2026-Oct-22 14:26:26
+#13 DONE 9.0s
+2026-Oct-22 14:26:27
+#14 [runtime 3/3] COPY --from=build /app/artifacts/bianco-restaurant/dist/public /usr/share/nginx/html
+2026-Oct-22 14:26:27
+#14 DONE 0.2s
+2026-Oct-22 14:26:27
+#15 exporting to image
+2026-Oct-22 14:26:27
+#15 exporting layers
+2026-Oct-22 14:26:30
+#15 exporting layers 2.7s done
+2026-Oct-22 14:26:30
+#15 exporting manifest sha256:21b6c46c1b85b47fcf45c9c1563d1c76422431bd3124b8b0f80a82aba540e17d 0.0s done
+2026-Oct-22 14:26:30
+#15 exporting config sha256:363a09de23cde66c473bf978f3f81bf8e53651b9d1728dca8d48c82263f16d18 done
+2026-Oct-22 14:26:30
+#15 exporting attestation manifest sha256:d49d805925dc0be2fffcaa168f0f4de589836f9e3435dd829cfa36852a242bec 0.0s done
+2026-Oct-22 14:26:30
+#15 exporting manifest list sha256:7e3435e32e3eb281ada68c1c1c519f8fd2262e23cf8aece2c3a97e5f39495cbe 0.0s done
+2026-Oct-22 14:26:30
+#15 naming to docker.io/library/olbu0fj7ffdiydtrrfr6jpzu:fe63a75581106a4e58e04a26308e8a48c01c5468 done
+2026-Oct-22 14:26:30
+#15 unpacking to docker.io/library/olbu0fj7ffdiydtrrfr6jpzu:fe63a75581106a4e58e04a26308e8a48c01c5468
+2026-Oct-22 14:26:32
+#15 unpacking to docker.io/library/olbu0fj7ffdiydtrrfr6jpzu:fe63a75581106a4e58e04a26308e8a48c01c5468 1.9s done
+2026-Oct-22 14:26:32
+#15 DONE 4.7s
+2026-Oct-22 14:26:32
+Building docker image completed.
+2026-Oct-22 14:26:32
+Creating .env file with runtime variables for container.
+2026-Oct-22 14:26:32
+----------------------------------------
+2026-Oct-22 14:26:32
+Rolling update started.
+2026-Oct-22 14:26:33
+[CMD]: docker exec gyguofenqbv4hcc4onk0la7n bash -c 'COOLIFY_URL='\''http://bianco.testea.site'\'' COOLIFY_FQDN='\''bianco.testea.site'\'' COOLIFY_BRANCH='\''main'\'' COOLIFY_RESOURCE_UUID='\''olbu0fj7ffdiydtrrfr6jpzu'\''  docker compose --project-name olbu0fj7ffdiydtrrfr6jpzu --project-directory /artifacts/gyguofenqbv4hcc4onk0la7n -f /artifacts/gyguofenqbv4hcc4onk0la7n/docker-compose.yaml up --build -d'
+2026-Oct-22 14:26:33
+Container olbu0fj7ffdiydtrrfr6jpzu-20261022T142513 Creating
+2026-Oct-22 14:26:33
+olbu0fj7ffdiydtrrfr6jpzu-20261022T142513 Your kernel does not support memory swappiness capabilities or the cgroup is not mounted. Memory swappiness discarded.
+2026-Oct-22 14:26:33
+Container olbu0fj7ffdiydtrrfr6jpzu-20261022T142513 Created
+2026-Oct-22 14:26:33
+Container olbu0fj7ffdiydtrrfr6jpzu-20261022T142513 Starting
+2026-Oct-22 14:26:33
+Container olbu0fj7ffdiydtrrfr6jpzu-20261022T142513 Started
+2026-Oct-22 14:26:33
+New container started.
+2026-Oct-22 14:26:33
+Removing old containers.
+2026-Oct-22 14:26:33
+Rolling update completed.
+2026-Oct-22 14:26:34
+Gracefully shutting down build container: gyguofenqbv4hcc4onk0la7n
+2026-Oct-22 14:26:34
+[CMD]: docker stop --timeout=30 'gyguofenqbv4hcc4onk0la7n'
+2026-Oct-22 14:26:34
+gyguofenqbv4hcc4onk0la7n
